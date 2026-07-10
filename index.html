@@ -1,290 +1,534 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Secure Awesome App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Web App Modern</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     
     <style>
-        .page-fade { transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary-color: #38bdf8;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- LOGIN PAGE --- */
+        #login-page {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            transition: opacity 0.5s ease, visibility 0.5s;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .login-card h2 {
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 20px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .login-card input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            color: #0f172a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* --- MAIN APP INTERFACE --- */
+        #app-header {
+            padding: 15px 20px;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .app-title {
+            margin-left: 20px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        /* --- SIDEBAR (GARIS 3) --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: #1e293b;
+            z-index: 999;
+            transition: 0.3s ease;
+            padding: 80px 20px 20px 20px;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-btn {
+            width: 100%;
+            padding: 12px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* --- MAIN CONTENT WINDOW --- */
+        #content-container {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .tab-content {
+            position: absolute;
+            inset: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+        }
+
+        .tab-content.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .maintenance-text {
+            font-size: 20px;
+            color: var(--text-muted);
+            text-align: center;
+            font-weight: 300;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* --- ACCOUNT PAGE SPECIFIC --- */
+        .profile-container {
+            text-align: center;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .profile-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #475569;
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 3px solid var(--primary-color);
+            position: relative;
+        }
+
+        .profile-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-box i {
+            font-size: 40px;
+            color: #94a3b8;
+        }
+
+        .profile-info h3 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .profile-hint {
+            font-size: 12px;
+            color: var(--primary-color);
+            margin-top: 10px;
+            min-height: 18px;
+        }
+
+        /* Crop Modal Sederhana */
+        .crop-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+        }
+
+        .crop-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .crop-box {
+            width: 250px;
+            height: 250px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 50%;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .crop-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- BOTTOM NAVIGATION BAR --- */
+        #bottom-nav {
+            height: 70px;
+            background: var(--card-bg);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.3s;
+            flex: 1;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+            transition: 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item.active i {
+            transform: translateY(-2px);
+        }
+
+        /* Hide utilities */
+        .hidden { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-900 text-white font-sans h-screen flex flex-col overflow-hidden select-none">
+<body>
 
-    <div id="login-screen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-6 transition-all duration-500">
-        <div class="bg-slate-900 p-8 rounded-2xl shadow-2xl border border-slate-800 w-full max-w-sm">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
-                <i class="fa-solid fa-lock text-2xl"></i>
-            </div>
-            <h2 class="text-2xl font-bold mb-1 text-center">Login Akun</h2>
-            <p class="text-slate-400 text-sm mb-6 text-center">Verifikasi database untuk masuk ke aplikasi.</p>
-            
-            <div class="space-y-4 mb-6">
-                <div>
-                    <label class="text-xs text-slate-400 font-semibold uppercase tracking-wider block mb-1.5">Email / Username</label>
-                    <input type="text" id="login-email" placeholder="Masukkan email lo" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium">
-                </div>
-                <div>
-                    <label class="text-xs text-slate-400 font-semibold uppercase tracking-wider block mb-1.5">Password</label>
-                    <input type="password" id="login-password" placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-all font-medium">
-                </div>
-            </div>
-
-            <div id="login-loading" class="hidden text-center text-sm text-blue-400 mb-3 animate-pulse">
-                <i class="fa-solid fa-circle-notch animate-spin mr-2"></i> Mengecek ke database...
-            </div>
-
-            <button onclick="handleDatabaseLogin()" class="w-full bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-right-to-bracket"></i> Autentikasi Masuk
-            </button>
+    <!-- 1. HALAMAN LOGIN -->
+    <div id="login-page">
+        <div class="login-card">
+            <h2>Masuk Aplikasi</h2>
+            <input type="text" id="username-input" placeholder="Masukkan nama lo..." autocomplete="off">
+            <button onclick="handleLogin()">Masuk</button>
         </div>
     </div>
 
-    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 py-4 flex items-center justify-between sticky top-0 z-30">
-        <button onclick="toggleSidebar(true)" class="w-10 h-10 flex flex-col justify-center items-start gap-1.5 hover:bg-slate-800 rounded-lg p-2 transition-all">
-            <span class="w-6 h-0.5 bg-white rounded-full"></span>
-            <span class="w-8 h-0.5 bg-white rounded-full"></span>
-            <span class="w-5 h-0.5 bg-white rounded-full"></span>
-        </button>
-        <h1 id="app-title" class="font-bold text-lg tracking-wide text-slate-200">Home</h1>
-        <div class="w-10"></div>
-    </header>
-
-    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
-    <div id="sidebar" class="fixed top-0 left-0 bottom-0 w-72 bg-slate-950 z-50 transform -translate-x-full transition-transform duration-300 ease-out border-r border-slate-800 p-6 flex flex-col justify-between">
-        <div>
-            <div class="flex items-center justify-between mb-8">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i class="fa-solid fa-layer-group text-sm"></i></div>
-                    <span class="font-bold text-lg">Menu Utama</span>
-                </div>
-                <button onclick="toggleSidebar(false)" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <button class="w-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-medium py-3 px-4 rounded-xl cursor-not-allowed flex items-center justify-center gap-2└──">
-                <i class="fa-solid fa-triangle-exclamation"></i> On Maintenance
-            </button>
-        </div>
-        <button onclick="handleLogout()" class="text-left text-sm text-rose-400 hover:text-rose-300 font-medium py-2 flex items-center gap-2">
-            <i class="fa-solid fa-right-from-bracket"></i> Keluar Akun (Logout)
-        </button>
+    <!-- OVERLAY & SIDEBAR -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-btn">On Maintance</button>
     </div>
 
-    <main class="flex-1 overflow-y-auto p-6 flex flex-col items-center justify-center relative bg-gradient-to-b from-slate-900 to-slate-950">
-        <div id="maintenance-tab" class="page-fade flex flex-col items-center text-center max-w-sm">
-            <div class="w-24 h-24 bg-amber-500/10 text-amber-500 rounded-full flex items-center justify-center mb-6 border border-amber-500/20 shadow-xl shadow-amber-500/5">
-                <i class="fa-solid fa-screwdriver-wrench text-4xl animate-bounce"></i>
-            </div>
-            <h2 class="text-2xl font-black tracking-tight mb-2">Maintenance Cuy</h2>
-            <p class="text-slate-400 text-sm leading-relaxed">Fitur ini lagi digodok sama developer handal. Tunggu info rilis selanjutnya ya!</p>
+    <!-- INTERFACE UTAMA -->
+    <!-- Header Atas -->
+    <div id="app-header">
+        <i class="fa-solid fa-bars menu-btn" onclick="toggleSidebar()"></i>
+        <div class="app-title" id="header-title">Home</div>
+    </div>
+
+    <!-- Wadah Konten Utama Tab (SPA) -->
+    <div id="content-container">
+        <!-- Tab Home -->
+        <div id="tab-home" class="tab-content active">
+            <div class="maintenance-text">Maintance cuy</div>
         </div>
 
-        <div id="account-tab" class="page-fade hidden flex flex-col items-center text-center w-full max-w-sm">
-            <div class="relative group cursor-pointer mb-6" onclick="triggerProfileClick()">
-                <div class="w-32 h-32 rounded-full overflow-hidden bg-slate-800 border-4 border-slate-700 flex items-center justify-center shadow-2xl relative transition-all group-hover:border-blue-500" id="profile-container">
-                    <i id="profile-icon" class="fa-solid fa-user text-5xl text-slate-600"></i>
-                    <img id="profile-img" src="" class="w-full h-full object-cover hidden">
-                    <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <i class="fa-solid fa-camera text-xl text-white"></i>
-                    </div>
+        <!-- Tab Chat Public -->
+        <div id="tab-chat" class="tab-content">
+            <div class="maintenance-text">Maintance cuy</div>
+        </div>
+
+        <!-- Tab Music -->
+        <div id="tab-music" class="tab-content">
+            <div class="maintenance-text">Maintance cuy</div>
+        </div>
+
+        <!-- Tab Account -->
+        <div id="tab-account" class="tab-content">
+            <div class="profile-container">
+                <div class="profile-box" onclick="handleProfileClick()">
+                    <!-- Default icon kosong, nanti diganti gambar via JS -->
+                    <i class="fa-solid fa-user" id="profile-icon"></i>
+                    <img id="profile-img" class="hidden" src="" alt="Profile">
+                </div>
+                <div class="profile-info">
+                    <h3 id="user-display-name">Nama User</h3>
+                    <div class="profile-hint" id="profile-hint-text"></div>
                 </div>
             </div>
-            <p id="profile-instruction" class="text-xs font-semibold text-blue-400 bg-blue-500/10 border border-blue-500/20 px-4 py-1.5 rounded-full mb-6 max-w-[250px]">
-                Pencet Ini Lagi Untuk Memasang Profil
-            </p>
-            <h3 id="display-name" class="text-2xl font-bold tracking-wide text-white mb-1">Nama User</h3>
-            <p class="text-xs text-slate-500 font-medium uppercase tracking-widest">Verified Account</p>
-            <input type="file" id="image-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
-        </div>
-    </main>
-
-    <div id="cropper-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex-col justify-between p-6">
-        <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold">Sesuaikan Foto</h3>
-            <button onclick="closeCropperModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-        </div>
-        <div class="max-w-full max-h-[65vh] flex items-center justify-center overflow-hidden my-auto rounded-xl">
-            <img id="cropper-image" src="" class="max-w-full">
-        </div>
-        <div class="flex gap-4">
-            <button onclick="closeCropperModal()" class="flex-1 bg-slate-800 text-white font-semibold py-3.5 rounded-xl transition-all">Batal</button>
-            <button onclick="saveCroppedImage()" class="flex-1 bg-blue-600 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-500/20">Selesai</button>
         </div>
     </div>
 
-    <nav class="bg-slate-900/90 backdrop-blur-md border-t border-slate-800 pb-safe pt-2 px-2 flex justify-around items-center sticky bottom-0 z-30">
-        <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 py-2 px-4 rounded-xl text-blue-500 transition-all w-20">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[10px] font-bold tracking-wider uppercase">Home</span>
-        </button>
-        <button onclick="switchTab('chat')" id="nav-chat" class="flex flex-col items-center gap-1 py-2 px-4 rounded-xl text-slate-500 transition-all w-20">
-            <i class="fa-solid fa-comments text-lg"></i>
-            <span class="text-[10px] font-bold tracking-wider uppercase">Chat Public</span>
-        </button>
-        <button onclick="switchTab('music')" id="nav-music" class="flex flex-col items-center gap-1 py-2 px-4 rounded-xl text-slate-500 transition-all w-20">
-            <i class="fa-solid fa-music text-lg"></i>
-            <span class="text-[10px] font-bold tracking-wider uppercase">Music</span>
-        </button>
-        <button onclick="switchTab('account')" id="nav-account" class="flex flex-col items-center gap-1 py-2 px-4 rounded-xl text-slate-500 transition-all w-20">
-            <i class="fa-solid fa-user text-lg"></i>
-            <span class="text-[10px] font-bold tracking-wider uppercase">Account</span>
-        </button>
-    </nav>
+    <!-- ELEMEN MODAL UNTUK CROP FOTO -->
+    <div class="crop-modal" id="crop-modal">
+        <h3 style="margin-bottom: 15px;">Sesuaikan Profil</h3>
+        <div class="crop-box">
+            <img id="crop-preview" src="" alt="Preview">
+        </div>
+        <button class="login-card" style="width: auto; padding: 10px 40px;" onclick="saveCroppedImage()">Selesai</button>
+    </div>
 
+    <!-- Input file tersembunyi untuk ambil foto -->
+    <input type="file" id="file-input" accept="image/*" class="hidden" onchange="onFileSelected(event)">
+
+    <!-- 2. BOTTOM NAVIGATION BAR -->
+    <div id="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('chat', this)">
+            <i class="fa-solid fa-comments"></i>
+            <span>Chat Public</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('music', this)">
+            <i class="fa-solid fa-music"></i>
+            <span>Music</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('account', this)">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>Account</span>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        let currentTab = 'home';
-        let cropperInstance = null;
+        let clickCount = 0;
+        let tempImgData = ""; // Untuk simpan base64 sementara pas "crop"
 
-        // --- 1. PERSISTENT LOGIN CHECK DENGAN SECURITY CHECK ---
+        // --- CEK AUTO LOGIN SAAT REFRESH / BUKA CHROME ---
         window.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('app_auth_token');
-            const savedUser = localStorage.getItem('app_username');
-            const savedProfile = localStorage.getItem('app_profile_img');
-            
-            // Jika ada Token Keamanan, anggap dia masih ter-autentikasi (HP mati ga masalah)
-            if (token && savedUser) {
-                document.getElementById('login-screen').classList.add('hidden', 'opacity-0');
-                document.getElementById('display-name').innerText = savedUser;
+            const savedName = localStorage.getItem('username');
+            const savedPhoto = localStorage.getItem('profilePhoto');
+
+            if (savedName) {
+                // Jika sudah ada data login, langsung hilangkan tab login
+                document.getElementById('login-page').style.opacity = '0';
+                document.getElementById('login-page').style.visibility = 'hidden';
+                document.getElementById('user-display-name').textContent = savedName;
                 
-                if (savedProfile) {
-                    const img = document.getElementById('profile-img');
-                    img.src = savedProfile;
-                    img.classList.remove('hidden');
-                    document.getElementById('profile-icon').classList.add('hidden');
+                // Load foto jika ada
+                if (savedPhoto) {
+                    const imgEl = document.getElementById('profile-img');
+                    const iconEl = document.getElementById('profile-icon');
+                    imgEl.src = savedPhoto;
+                    imgEl.classList.remove('hidden');
+                    iconEl.classList.add('hidden');
                 }
             }
         });
 
-        // --- 2. FUNGSI KIRIM DATA KE DATABASE (REAL BACKEND AUTH) ---
-        async function handleDatabaseLogin() {
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value.trim();
-            const loading = document.getElementById('login-loading');
-
-            if (!email || !password) return alert('Wajib isi Email dan Password bro!');
-
-            loading.classList.remove('hidden'); // Tampilkan loading spinner
-
-            try {
-                /* SISTEM INTEGRASI DATABASE:
-                  Ganti URL di bawah dengan alamat API Backend/Database asli lo (Node.js, PHP, Firebase, Supabase, dll.)
-                */
-                // const response = await fetch('https://api.domainlo.com/login', {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ email, password })
-                // });
-                // const data = await response.json();
-
-                // --- SIMULASI RESPONS DATA BERHASIL DARI DATABASE ---
-                // Nanti bagian simulasi ini tinggal lo hapus kalau API aslinya udah aktif!
-                await new Promise(resolve => setTimeout(resolve, 1500)); // Simulasi delay internet
-                const fakeDbResponse = {
-                    success: true,
-                    token: "JWT_SECURE_TOKEN_REALS_12345", // Token acak dari DB
-                    username: email.split('@')[0], // Contoh ngambil nama depan email
-                };
-
-                if (fakeDbResponse.success) {
-                    // Simpan token auth dan data ke localStorage biar persistent
-                    localStorage.setItem('app_auth_token', fakeDbResponse.token);
-                    localStorage.setItem('app_username', fakeDbResponse.username);
-                    
-                    document.getElementById('display-name').innerText = fakeDbResponse.username;
-
-                    // Efek transisi masuk aplikasi
-                    const loginScreen = document.getElementById('login-screen');
-                    loginScreen.classList.add('opacity-0');
-                    setTimeout(() => loginScreen.classList.add('hidden'), 500);
-                } else {
-                    alert('Gagal autentikasi! Akun tidak terdaftar di database.');
-                }
-
-            } catch (error) {
-                console.error(error);
-                alert('Waduh, gagal koneksi ke database backend!');
-            } finally {
-                loading.classList.add('hidden');
+        // --- PROSES LOGIN ---
+        function handleLogin() {
+            const nameInput = document.getElementById('username-input').value.trim();
+            if (nameInput === "") {
+                alert("Nama lo jangan kosong dong!");
+                return;
             }
-        }
 
-        function handleLogout() {
-            localStorage.clear(); // Hapus token auth biar aman total pas keluar
-            location.reload();
-        }
+            // Simpan ke localStorage biar permanen
+            localStorage.setItem('username', nameInput);
+            document.getElementById('user-display-name').textContent = nameInput;
 
-        // --- 3. SIDEBAR & TAB SWITCHING SYSTEM ---
-        function toggleSidebar(open) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (open) {
-                sidebar.classList.remove('-translate-x-full');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.add('opacity-100'), 10);
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                overlay.classList.remove('opacity-100');
-                setTimeout(() => overlay.classList.add('hidden'), 300);
-            }
-        }
-
-        function switchTab(tabName) {
-            if (currentTab === tabName) return;
-            currentTab = tabName;
-
-            const maintenanceTab = document.getElementById('maintenance-tab');
-            const accountTab = document.getElementById('account-tab');
-            document.getElementById('app-title').innerText = { home: 'Home', chat: 'Chat Public', music: 'Music', account: 'Account' }[tabName];
-
-            ['home', 'chat', 'music', 'account'].forEach(t => {
-                const navBtn = document.getElementById(`nav-${t}`);
-                t === tabName ? (navBtn.classList.remove('text-slate-500'), navBtn.classList.add('text-blue-500')) : (navBtn.classList.remove('text-blue-500'), navBtn.classList.add('text-slate-500'));
-            });
-
-            const activeTabContent = (tabName === 'account') ? accountTab : maintenanceTab;
-            const hiddenTabContent = (tabName === 'account') ? maintenanceTab : accountTab;
-
-            hiddenTabContent.classList.add('opacity-0', 'scale-95');
+            // Transisi hilangkan tab login
+            const loginPage = document.getElementById('login-page');
+            loginPage.style.opacity = '0';
             setTimeout(() => {
-                hiddenTabContent.classList.add('hidden');
-                activeTabContent.classList.remove('hidden');
-                setTimeout(() => activeTabContent.classList.remove('opacity-0', 'scale-95'), 50);
-            }, 150);
+                loginPage.style.visibility = 'hidden';
+            }, 500);
         }
 
-        // --- 4. IMAGE CROPPER & PROFILE SYSTEM ---
-        function triggerProfileClick() { document.getElementById('image-input').click(); }
-        function handleFileSelect(event) {
+        // --- PINDAH TAB (BOTTOM NAV) ---
+        function switchTab(tabName, element) {
+            // Ubah class aktif di Bottom Nav
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+
+            // Ganti Title di Header
+            const titles = { home: 'Home', chat: 'Chat Public', music: 'Music', account: 'Account' };
+            document.getElementById('header-title').textContent = titles[tabName];
+
+            // Pindah Konten Secara Smooth
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Reset hitungan klik profil jika pindah tab
+            clickCount = 0;
+            document.getElementById('profile-hint-text').textContent = "";
+        }
+
+        // --- SIDEBAR (GARIS 3) ---
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // --- LOGIKA PROFIL & SIMULASI CROP ---
+        function handleProfileClick() {
+            const hintText = document.getElementById('profile-hint-text');
+            
+            if (clickCount === 0) {
+                hintText.textContent = "Pencet Ini Lagi Untuk Memasang Profil";
+                clickCount++;
+            } else if (clickCount === 1) {
+                // Trigger input file/galeri
+                document.getElementById('file-input').click();
+                clickCount = 0; // reset
+                hintText.textContent = "";
+            }
+        }
+
+        function onFileSelected(event) {
             const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const cropperImage = document.getElementById('cropper-image');
-                cropperImage.src = e.target.result;
-                document.getElementById('cropper-modal').classList.replace('hidden', 'flex');
-                if (cropperInstance) cropperInstance.destroy();
-                cropperInstance = new Cropper(cropperImage, { aspectRatio: 1, viewMode: 1, background: false });
-            };
-            reader.readAsDataURL(file);
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    tempImgData = e.target.result;
+                    
+                    // Munculkan modal "Crop" preview
+                    document.getElementById('crop-preview').src = tempImgData;
+                    document.getElementById('crop-modal').classList.add('active');
+                }
+                reader.readAsDataURL(file);
+            }
         }
-        function closeCropperModal() {
-            document.getElementById('cropper-modal').classList.replace('flex', 'hidden');
-            document.getElementById('image-input').value = '';
-            if (cropperInstance) cropperInstance.destroy();
-        }
+
         function saveCroppedImage() {
-            if (!cropperInstance) return;
-            const canvas = cropperInstance.getCroppedCanvas({ width: 300, height: 300 });
-            const croppedImageDataUrl = canvas.toDataURL('image/jpeg');
-            const img = document.getElementById('profile-img');
-            img.src = croppedImageDataUrl;
-            img.classList.remove('hidden');
-            document.getElementById('profile-icon').classList.add('hidden');
-            localStorage.setItem('app_profile_img', croppedImageDataUrl);
-            closeCropperModal();
+            // Simpan foto permanen ke localStorage
+            localStorage.setItem('profilePhoto', tempImgData);
+
+            // Pasang ke element img profil utama
+            const imgEl = document.getElementById('profile-img');
+            const iconEl = document.getElementById('profile-icon');
+            
+            imgEl.src = tempImgData;
+            imgEl.classList.remove('hidden');
+            iconEl.classList.add('hidden');
+
+            // Tutup modal crop
+            document.getElementById('crop-modal').classList.remove('active');
+            // Reset input file biar bisa upload foto yang sama lagi nanti
+            document.getElementById('file-input').value = "";
         }
     </script>
 </body>
