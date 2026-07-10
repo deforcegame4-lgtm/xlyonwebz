@@ -3,155 +3,271 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hanzz Database - Login</title>
+  <title>Hanzz Database - Premium Access</title>
   <style>
+    /* --- RESET & ACCENT COLORS --- */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, #090d16, #111827);
+      background: #060913;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
+      position: relative;
     }
 
-    /* Container Login */
+    /* --- ANIMATED MESH BACKGROUND --- */
+    .bg-glow-1 {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0,0,0,0) 70%);
+      top: -10%;
+      left: -10%;
+      animation: floatBg 20s infinite alternate ease-in-out;
+    }
+
+    .bg-glow-2 {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, rgba(0,0,0,0) 70%);
+      bottom: -20%;
+      right: -10%;
+      animation: floatBg 25s infinite alternate-reverse ease-in-out;
+    }
+
+    @keyframes floatBg {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(80px, 50px) scale(1.2); }
+    }
+
+    /* --- DECORATIVE GLASS CIRCLES --- */
+    .circle-deco-1 {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      border-radius: 50%;
+      z-index: 1;
+      transform: translate(-150px, -180px);
+      filter: blur(1px);
+      box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+    }
+
+    .circle-deco-2 {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border-radius: 50%;
+      z-index: 1;
+      transform: translate(160px, 190px);
+      filter: blur(2px);
+      box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+    }
+
+    /* --- CYBERPUNK GLASSMORPHISM BOX --- */
     .login-box {
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 15, 30, 0.55);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 40px 30px;
-      border-radius: 24px;
+      padding: 45px 35px;
+      border-radius: 28px;
       width: 100%;
-      max-width: 360px;
+      max-width: 380px;
       color: #ffffff;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 
+                  inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+
+    /* Glow border top effect */
+    .login-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.5), rgba(236, 72, 153, 0.5), transparent);
     }
 
     .login-box h2 {
       text-align: center;
-      margin-bottom: 30px;
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      background: linear-gradient(135deg, #ffffff 60%, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
+    .login-box p.subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 35px;
+      font-weight: 500;
+    }
+
+    /* --- PREMIUM INPUT FIELDS --- */
     .input-field {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
     .input-field label {
       display: block;
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 6px;
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .input-field input {
       width: 100%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
+      padding: 14px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
       color: #ffffff;
       font-size: 15px;
       outline: none;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .input-field input:focus {
-      border-color: #3b82f6;
-      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(99, 102, 241, 0.6);
+      background: rgba(99, 102, 241, 0.04);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15), 
+                  inset 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
+    .input-field input::placeholder {
+      color: #475569;
+    }
+
+    /* --- SHIMMER GLOW BUTTON --- */
     button {
       width: 100%;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 15px;
+      border-radius: 14px;
       border: none;
-      background: #2563eb;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
       color: #ffffff;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+      transition: all 0.3s ease;
       margin-top: 10px;
     }
 
     button:hover {
-      background: #1d4ed8;
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 70, 229, 0.45);
     }
 
-    /* --- NOTIFIKASI IPHONE GLASSMORPHISM (SMOOTH FX) --- */
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      background: #334155;
+      color: #64748b;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* --- NOTIFIKASI IPHONE GLASSMORPHISM (ULTRA SMOOTH V2) --- */
     .ios-notification {
       position: fixed;
-      top: -100px; /* Sembunyi di atas layar */
+      top: -120px;
       left: 50%;
-      transform: translateX(-50%) scale(0.9);
+      transform: translateX(-50%) scale(0.92);
       width: 90%;
-      max-width: 340px;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(25px) saturate(180%);
-      -webkit-backdrop-filter: blur(25px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 20px;
-      padding: 16px;
+      max-width: 350px;
+      background: rgba(20, 25, 40, 0.7);
+      backdrop-filter: blur(25px) saturate(190%);
+      -webkit-backdrop-filter: blur(25px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 22px;
+      padding: 16px 20px;
       color: #ffffff;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 14px;
       text-align: center;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 
+                  inset 0 1px 0 rgba(255, 255, 255, 0.2);
       z-index: 9999;
       opacity: 0;
       pointer-events: none;
-      /* Animasi Masuk: Efek mantul smooth khas iOS */
-      transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                  transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      /* Animasi Masuk Khas iOS 17 (Bouncy Spring) */
+      transition: top 0.6s cubic-bezier(0.16, 1, 0.3, 1), 
+                  transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15), 
                   opacity 0.4s ease;
     }
 
-    /* Class saat Notif Muncul */
+    /* Notif Muncul */
     .ios-notification.show {
       top: 24px;
       transform: translateX(-50%) scale(1);
       opacity: 1;
     }
 
-    /* Class saat Notif Keluar (Smooth Keluar) */
+    /* Notif Keluar */
     .ios-notification.hide {
-      top: -100px;
-      transform: translateX(-50%) scale(0.85);
+      top: -120px;
+      transform: translateX(-50%) scale(0.9);
       opacity: 0;
-      /* Animasi Keluar: Berakselerasi halus ke atas */
       transition: top 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19), 
                   transform 0.5s cubic-bezier(0.55, 0.055, 0.675, 0.19), 
-                  opacity 0.4s ease;
+                  opacity 0.3s ease;
     }
   </style>
 </head>
 <body>
 
+  <div class="bg-glow-1"></div>
+  <div class="bg-glow-2"></div>
+
   <div id="iosNotif" class="ios-notification"></div>
 
+  <div class="circle-deco-1"></div>
+  <div class="circle-deco-2"></div>
+  
   <div class="login-box">
-    <h2>Database Hanzz</h2>
+    <h2>Hanzz Database</h2>
+    <p class="subtitle">Enter your key credentials to access</p>
+    
     <form id="loginForm">
       <div class="input-field">
         <label for="username">Username</label>
-        <input type="text" id="username" autocomplete="off" placeholder="Masukkan username" required>
+        <input type="text" id="username" autocomplete="off" placeholder="e.g. HanzKing" required>
       </div>
       <div class="input-field">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Masukkan password" required>
+        <input type="password" id="password" placeholder="••••••••" required>
       </div>
-      <button type="submit" id="btnSubmit">Login</button>
+      <button type="submit" id="btnSubmit">Secure Login</button>
     </form>
   </div>
 
@@ -164,6 +280,7 @@
       const btnSubmit = document.getElementById('btnSubmit');
       
       btnSubmit.disabled = true;
+      btnSubmit.innerText = "Authenticating...";
       
       try {
         const response = await fetch('/api/login', {
@@ -173,12 +290,19 @@
         });
         
         const data = await response.json();
-        showIosNotification(data.message);
+        
+        // Ganti icon notif berdasarkan status sukses/gagal
+        if (response.status === 200) {
+          showIosNotification("👑 " + data.message);
+        } else {
+          showIosNotification("⚠️ " + data.message);
+        }
         
       } catch (error) {
-        showIosNotification("Gagal terhubung ke server!");
+        showIosNotification("❌ Gagal terhubung ke server!");
       } finally {
         btnSubmit.disabled = false;
+        btnSubmit.innerText = "Secure Login";
       }
     });
 
@@ -186,16 +310,11 @@
       const notif = document.getElementById('iosNotif');
       
       notif.innerText = text;
-      
-      // Reset status class
       notif.classList.remove('hide');
-      // Trigger animasi masuk smooth
       notif.classList.add('show');
       
-      // Clear timeout lama biar ga bertabrakan kalau di-spam klik
       if (window.notifTimer) clearTimeout(window.notifTimer);
       
-      // Cooldown 4 detik (4000ms) untuk dibaca, lalu animasi keluar smooth
       window.notifTimer = setTimeout(() => {
         notif.classList.remove('show');
         notif.classList.add('hide');
